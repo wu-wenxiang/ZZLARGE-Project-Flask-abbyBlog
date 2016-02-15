@@ -1,10 +1,21 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*$py.class
 
 # C extensions
 *.so
+
+# Eclipse project files
+.project
+.pydevproject
+.settings
+
+# Project tmp files
+instance
+logs
+edustack/db
+fabricrc
+deployconfig/*.tmp
 
 # Distribution / packaging
 .Python
@@ -43,7 +54,6 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *,cover
-.hypothesis/
 
 # Translations
 *.mo
@@ -57,6 +67,3 @@ docs/_build/
 
 # PyBuilder
 target/
-
-#Ipython Notebook
-.ipynb_checkpoints
