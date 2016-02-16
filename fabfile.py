@@ -6,6 +6,7 @@ from fabric.api import cd, env, lcd, put, prompt, local, sudo, run, prefix
 project_name = 'AbbyBlog'
 local_app_dir = './'
 local_config_dir = './deployconfig'
+local_source_list = 'sources.list.u1404.en'
 
 remote_app_dir = '/home/www'
 remote_git_dir = '/home/git'
@@ -19,7 +20,7 @@ def install_requirements_u1404():
     sudo('if [ -f /etc/apt/sources.list ];then cp /etc/apt/sources.list /etc/apt/sources.list.$(date +"%y%m%d%H%M%S");fi')
     with lcd(local_config_dir):
         with cd('/etc/apt'):
-            put('./sources.list', './', use_sudo=True)
+            put('./sources.list.u1404.en', './sources.list', use_sudo=True)
     sudo('apt-get update')
     sudo('apt-get install -y python python-dev python-pip')
     sudo('apt-get install -y python-virtualenv')
