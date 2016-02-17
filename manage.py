@@ -35,6 +35,7 @@ def opt_init():
     from edustack.models import db
     from edustack.models import User
     from edustack.models import Blog
+    from edustack.models import Comment
     adminUser = User("admin", "admin@test.com", "admin", "adminImage", True)
     db.session.add(adminUser)
     test1User = User("test1", "test1@test.com", "test1", "test1Image")
@@ -45,6 +46,10 @@ def opt_init():
     db.session.add(blog1)
     blog2 = Blog(3, "Test2_Blog_Name", "Test2_Blog_Summary", "Test2_Blog_Content")
     db.session.add(blog2)
+    comment1 = Comment(2, 2, "Comment_User1_Blog2")
+    db.session.add(comment1)
+    comment2 = Comment(3, 1, "Comment_User2_Blog1")
+    db.session.add(comment2)
     db.session.commit()
 
 def opt_clean():

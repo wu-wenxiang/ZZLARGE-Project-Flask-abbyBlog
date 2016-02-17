@@ -20,7 +20,7 @@ class User(db.Model):
     image = db.Column(db.String(500))
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
     blogs = db.relationship('Blog', backref='user', lazy='dynamic')
-#     comments = db.relationship('Comment', backref='user', lazy='dynamic')
+    comments = db.relationship('Comment', backref='user', lazy='dynamic')
 
     def __init__(self, name, email, password, image, admin=False):
         self.name = name
@@ -39,6 +39,7 @@ class Blog(db.Model):
     summary = db.Column(db.String(50))
     content = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    comments = db.relationship('Comment', backref='blog', lazy='dynamic')
 
     def __init__(self, user_id, name, summary, content):
         self.user_id = user_id
@@ -49,17 +50,20 @@ class Blog(db.Model):
     def __repr__(self):
         return '<Blog {!r}>'.format(self.name)
 
-# class Comment(Model):
-#     __table__ = 'comments'
-# 
-#     id = CharField(primary_key=True, default=next_id, max_length=50)
-#     blog_id = CharField(max_length=50)
-#     user_id = CharField(max_length=50)
-#     user_name = CharField(max_length=50)
-#     user_image = CharField(max_length=500)
-#     content = TextField()
-#     created_at = FloatField(default=time.time)
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    blog_id = db.Column(db.Integer, db.ForeignKey('blog.id'))
+    content = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now)
 
+    def __init__(self, user_id, blog_id, content):
+        self.user_id = user_id
+        self.blog_id = blog_id
+        self.content = content
+
+    def __repr__(self):
+        return '<Comment {!r}>'.format((self.content+" "*10)[:10])
 
 # class LocalAuth(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)

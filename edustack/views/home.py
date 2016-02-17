@@ -8,6 +8,7 @@ from flask import Blueprint
 from flask import render_template
 from edustack.models import User
 from edustack.models import Blog
+from edustack.models import Comment
 
 home = Blueprint('home', __name__)
 
@@ -16,4 +17,6 @@ home = Blueprint('home', __name__)
 def hello():
     users = User.query.all()
     blogs = Blog.query.all()
-    return render_template(r"home/layout.html", users=users, blogs=blogs)
+    comments = Comment.query.all()
+    return render_template(r"home/layout.html",users=users,
+                           blogs=blogs, comments=comments)
