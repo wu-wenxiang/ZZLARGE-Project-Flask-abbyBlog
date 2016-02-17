@@ -7,6 +7,7 @@ Created on 2016-01-17
 from flask import Blueprint
 from flask import render_template
 from edustack.models import User
+from edustack.models import Blog
 
 home = Blueprint('home', __name__)
 
@@ -14,4 +15,5 @@ home = Blueprint('home', __name__)
 @home.route('/index/')
 def hello():
     users = User.query.all()
-    return render_template(r"home/layout.html", users=users)
+    blogs = Blog.query.all()
+    return render_template(r"home/layout.html", users=users, blogs=blogs)

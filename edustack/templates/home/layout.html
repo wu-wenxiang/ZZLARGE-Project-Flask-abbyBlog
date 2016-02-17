@@ -7,4 +7,8 @@
 {% for u in users %}
 <p>{{ u.name }} / {{ u.email }}</p>
 {% endfor %}
+<h1>All blogs</h1>
+{% for b in blogs %}
+<p>{{ b.name }} / {{ b.user }}</p>
+{% endfor %}
 {% endblock %}

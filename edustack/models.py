@@ -19,6 +19,8 @@ class User(db.Model):
     admin = db.Column(db.Boolean)
     image = db.Column(db.String(500))
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    blogs = db.relationship('Blog', backref='user', lazy='dynamic')
+#     comments = db.relationship('Comment', backref='user', lazy='dynamic')
 
     def __init__(self, name, email, password, image, admin=False):
         self.name = name
@@ -29,19 +31,24 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User {!r}>'.format(self.name)
-# 
-# class Blog(Model):
-#     __table__ = 'blogs'
-# 
-#     id = CharField(primary_key=True, default=next_id, max_length=50)
-#     user_id = CharField(max_length=50)
-#     user_name = CharField(max_length=50)
-#     user_image = CharField(max_length=500)
-#     name = CharField(max_length=50)
-#     summary = CharField(max_length=50)
-#     content = TextField()
-#     created_at = FloatField(default=time.time)
-# 
+
+class Blog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    name = db.Column(db.String(50))
+    summary = db.Column(db.String(50))
+    content = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    def __init__(self, user_id, name, summary, content):
+        self.user_id = user_id
+        self.name = name
+        self.summary = summary
+        self.content = content
+
+    def __repr__(self):
+        return '<Blog {!r}>'.format(self.name)
+
 # class Comment(Model):
 #     __table__ = 'comments'
 # 
@@ -52,19 +59,7 @@ class User(db.Model):
 #     user_image = CharField(max_length=500)
 #     content = TextField()
 #     created_at = FloatField(default=time.time)
-# 
-# 
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(120))
-#     email = db.Column(db.String(120), unique=True)
-# 
-#     def __init__(self, name, email):
-#         self.name = name
-#         self.email = email
-# 
-#     def __repr__(self):
-#         return '<User {!r}>'.format(self.name)
+
 
 # class LocalAuth(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
