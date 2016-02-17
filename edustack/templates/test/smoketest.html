@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}SmokeTest{% endblock %}
+
+{% block body %}
+<h1>All users</h1>
+{% for u in users %}
+<p>{{ u.name }} / {{ u.email }}</p>
+{% endfor %}
+<h1>All blogs</h1>
+{% for b in blogs %}
+<p>{{ b.name }} / {{ b.user }}</p>
+{% endfor %}
+<h1>All comments</h1>
+{% for c in comments %}
+<p>{{ c.content }} / {{ c.user }} / {{ c.blog }}</p>
+{% endfor %}
+{% endblock %}

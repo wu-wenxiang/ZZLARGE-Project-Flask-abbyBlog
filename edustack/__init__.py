@@ -23,6 +23,8 @@ def create_app():
 wsgiApp = create_app()
 
 from edustack.views.home import home
+from edustack.views.test import test
 wsgiApp.register_blueprint(home, url_prefix="/")
 wsgiApp.register_blueprint(home, url_prefix="/home")
+wsgiApp.register_blueprint(test, url_prefix="/test")
 
