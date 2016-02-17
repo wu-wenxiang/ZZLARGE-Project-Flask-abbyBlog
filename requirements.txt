@@ -2,4 +2,5 @@ gevent
 gunicorn
 fabric
 flask
-flask_sqlalchemy
+flask-sqlalchemy
+flask-restful

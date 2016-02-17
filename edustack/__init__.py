@@ -5,11 +5,12 @@ Created on 2016-01-13
 '''
 
 import datetime
+import jinja2_filters
 import os
 import time
 from flask import Flask
-from inspect import getmembers, isfunction
-import jinja2_filters
+from inspect import getmembers
+from inspect import isfunction
 
 
 def create_app():
@@ -28,13 +29,16 @@ def create_app():
                   for name, function in getmembers(jinja2_filters)
                   if isfunction(function)}
     app.jinja_env.filters.update(customFilters)
+
     return app
 
 wsgiApp = create_app()
 
-from edustack.views.home import home
-from edustack.views.test import test
+from edustack.views import home
+from edustack.views import test
+from edustack.views import api
 wsgiApp.register_blueprint(home, url_prefix="/")
 wsgiApp.register_blueprint(home, url_prefix="/home")
 wsgiApp.register_blueprint(test, url_prefix="/test")
+wsgiApp.register_blueprint(api, url_prefix="/api")
 
