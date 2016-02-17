@@ -34,8 +34,12 @@ def opt_syncdb():
 def opt_init():
     from edustack.models import db
     from edustack.models import User
-    adminUser = User("admin", "admin@test.com")
+    adminUser = User("admin", "admin@test.com", "admin", "adminImage", True)
     db.session.add(adminUser)
+    test1User = User("test1", "test1@test.com", "test1", "test1Image")
+    db.session.add(test1User)
+    test2User = User("test2", "test2@test.com", "test2", "test2Image")
+    db.session.add(test2User)
     db.session.commit()
 
 def opt_clean():

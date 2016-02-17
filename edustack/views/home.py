@@ -13,5 +13,5 @@ home = Blueprint('home', __name__)
 @home.route('/')
 @home.route('/index/')
 def hello():
-    admin = User.query.filter_by(name='admin').first()
-    return render_template(r"home/layout.html", user=admin)
+    users = User.query.all()
+    return render_template(r"home/layout.html", users=users)
