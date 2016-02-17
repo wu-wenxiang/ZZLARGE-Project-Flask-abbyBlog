@@ -4,8 +4,13 @@ Created on 2016-01-13
 @author: Wu Wenxiang (wuwenxiang.sh@gmail.com)
 '''
 
+import datetime
 import os
+import time
 from flask import Flask
+from inspect import getmembers, isfunction
+import jinja2_filters
+
 
 def create_app():
     try:
@@ -18,6 +23,11 @@ def create_app():
         app.config.from_envvar('APP_CONFIG_FILE')
     except RuntimeError:
         pass
+    
+    customFilters = {name: function 
+                  for name, function in getmembers(jinja2_filters)
+                  if isfunction(function)}
+    app.jinja_env.filters.update(customFilters)
     return app
 
 wsgiApp = create_app()

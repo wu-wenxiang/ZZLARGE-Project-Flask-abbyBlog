@@ -63,7 +63,7 @@ class Comment(db.Model):
         self.content = content
 
     def __repr__(self):
-        return '<Comment {!r}>'.format((self.content+" "*10)[:10])
+        return '<Comment {!r}>'.format(self.content)
 
 # class LocalAuth(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)

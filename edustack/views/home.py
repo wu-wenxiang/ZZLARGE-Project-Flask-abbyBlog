@@ -8,15 +8,12 @@ from flask import Blueprint
 from flask import render_template
 from edustack.models import User
 from edustack.models import Blog
-from edustack.models import Comment
 
 home = Blueprint('home', __name__)
 
 @home.route('/')
 @home.route('/index/')
-def hello():
-    users = User.query.all()
+def index():
+    user = User.query.filter_by(name='admin').first()
     blogs = Blog.query.all()
-    comments = Comment.query.all()
-    return render_template(r"home/layout.html",users=users,
-                           blogs=blogs, comments=comments)
+    return render_template(r"home/blogs.html", user=user, blogs=blogs)
