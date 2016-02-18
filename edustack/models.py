@@ -32,6 +32,23 @@ class User(db.Model):
     def __repr__(self):
         return '<User {!r}>'.format(self.name)
 
+    # Flask-Login integration
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id
+
+    # Required for administrative interface
+    def __unicode__(self):
+        return self.name
+
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

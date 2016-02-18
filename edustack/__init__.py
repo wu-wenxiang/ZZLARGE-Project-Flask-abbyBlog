@@ -5,9 +5,11 @@ Created on 2016-01-13
 '''
 
 import datetime
+import flask_login
 import jinja2_filters
 import os
 import time
+
 from flask import Flask
 from inspect import getmembers
 from inspect import isfunction
@@ -34,9 +36,26 @@ def create_app():
 
 wsgiApp = create_app()
 
+
+from edustack.models import db
+from edustack.models import User
+
 from edustack.views import home
 from edustack.views import test
 from edustack.views import api
+
+# Initialize flask-login
+def init_login(app, db):
+    login_manager = flask_login.LoginManager()
+    login_manager.init_app(app)
+
+    # Create user loader function
+    @login_manager.user_loader
+    def load_user(user_id):
+        return db.session.query(User).get(user_id)
+
+init_login(wsgiApp, db)
+
 wsgiApp.register_blueprint(home, url_prefix="/")
 wsgiApp.register_blueprint(home, url_prefix="/home")
 wsgiApp.register_blueprint(test, url_prefix="/test")
