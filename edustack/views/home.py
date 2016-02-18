@@ -17,3 +17,7 @@ def index():
     user = User.query.filter_by(name='admin').first()
     blogs = Blog.query.all()
     return render_template(r"home/blogs.html", user=user, blogs=blogs)
+
+@home.route('/register/')
+def register():
+    return render_template(r"home/register.html")

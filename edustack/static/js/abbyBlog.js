@@ -28,7 +28,7 @@ function _ajax(method, url, data, callback) {
         }
         return callback && callback(null, r);
     }).fail(function(jqXHR, textStatus) {
-        return callback && callback({error: 'HTTP ' + jqXHR.status, message: 'Network error (HTTP ' + jqXHR.status + ')'});
+        return callback && callback({error: 'HTTP ' + jqXHR.status, message: 'Network error (HTTP ' + jqXHR.status + ' :' + jqXHR.responseText + ' )'});
     });
 }
 

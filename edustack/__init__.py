@@ -56,7 +56,7 @@ def init_login(app, db):
 
 init_login(wsgiApp, db)
 
-wsgiApp.register_blueprint(home, url_prefix="/")
+wsgiApp.register_blueprint(home, url_prefix="")
 wsgiApp.register_blueprint(home, url_prefix="/home")
 wsgiApp.register_blueprint(test, url_prefix="/test")
 wsgiApp.register_blueprint(api, url_prefix="/api")
