@@ -89,5 +89,31 @@ class API_User(Resource):
         user.password = '******'
         return {'user': toDict(user)}
 
+postAuthList = ['email', 'password', 'remember']
+postAuthParser = reqparse.RequestParser()
+for i in postAuthList:
+    postAuthParser.add_argument(i)
+class API_AUTH(Resource):
+    def post(self):
+        args = postAuthParser.parse_args()
+        assertArgsNotEmpty(args, postAuthList)
+
+        email = args['email'].strip().lower()
+        password = args['password']
+        remember = True if args['remember']=='true' else False
+
+        user = User.query.filter_by(email=email).first()
+        print type(user)
+        if not user:
+            abort(401, message="Invalid email.")
+        elif password != user.password:
+            abort(401, message="Invalid password.")
+
+        login.login_user(user, remember=remember)
+
+        user.password = '******'
+        return {'user': toDict(user)}
+
 api_res.add_resource(API_Users, '/users')
 api_res.add_resource(API_User, '/users/<int:id>')
+api_res.add_resource(API_AUTH, '/authenticate')
