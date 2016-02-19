@@ -103,7 +103,6 @@ class API_AUTH(Resource):
         remember = True if args['remember']=='true' else False
 
         user = User.query.filter_by(email=email).first()
-        print type(user)
         if not user:
             abort(401, message="Invalid email.")
         elif password != user.password:

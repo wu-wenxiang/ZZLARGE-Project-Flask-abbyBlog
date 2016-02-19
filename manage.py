@@ -4,6 +4,7 @@ Created on 2016-01-17
 @author: Wu Wenxiang (wuwenxiang.sh@gmail.com)
 '''
 
+import hashlib
 import logging
 import os
 import shutil
@@ -36,11 +37,17 @@ def opt_init():
     from edustack.models import User
     from edustack.models import Blog
     from edustack.models import Comment
-    adminUser = User("admin", "admin@test.com", "admin", "adminImage", True)
+    def init_user(name, email, admin=False):
+        emailHash = hashlib.md5(email).hexdigest()
+        password = emailHash
+        image = "http://www.gravatar.com/avatar/{0}?d=mm&s=120".format(emailHash)
+        return User(name, email, password, image, admin)
+
+    adminUser = init_user("admin", "admin@admin.com", True)
     db.session.add(adminUser)
-    test1User = User("test1", "test1@test.com", "test1", "test1Image")
+    test1User = init_user("test1", "test1@test.com")
     db.session.add(test1User)
-    test2User = User("test2", "test2@test.com", "test2", "test2Image")
+    test2User = init_user("test2", "test2@test.com")
     db.session.add(test2User)
     blog1 = Blog(2, "Test1_Blog_Name", "Test1_Blog_Summary", "Test1_Blog_Content")
     db.session.add(blog1)

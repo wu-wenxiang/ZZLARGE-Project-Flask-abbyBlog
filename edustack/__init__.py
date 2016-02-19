@@ -43,6 +43,7 @@ from edustack.models import User
 from edustack.views import home
 from edustack.views import test
 from edustack.views import api
+from edustack.views import manage
 
 # Initialize flask-login
 def init_login(app, db):
@@ -60,4 +61,5 @@ wsgiApp.register_blueprint(home, url_prefix="")
 wsgiApp.register_blueprint(home, url_prefix="/home")
 wsgiApp.register_blueprint(test, url_prefix="/test")
 wsgiApp.register_blueprint(api, url_prefix="/api")
+wsgiApp.register_blueprint(manage, url_prefix="/manage")
 
