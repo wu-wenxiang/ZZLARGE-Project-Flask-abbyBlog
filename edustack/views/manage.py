@@ -18,10 +18,7 @@ def before_request():
     if not (current_user.is_authenticated and current_user.admin):
         return redirect(url_for('home.signin'))
 
-@manage.route('/')
-def hello():
-    users = User.query.all()
-    blogs = Blog.query.all()
-    comments = Comment.query.all()
-    return render_template(r"test/smoketest.html",users=users,
-                           blogs=blogs, comments=comments)
+@manage.route('/blogs/create')
+def manage_blogs_create():
+    return render_template(r"home/manage_blog_edit.html",
+                           action='/api/blogs', redirect='/manage/blogs')

@@ -18,6 +18,7 @@ from edustack.models import db
 from edustack.models import User
 from edustack.models import Blog
 from edustack.models import Comment
+from flask_login import current_user
 
 
 api = Blueprint('api', __name__)
@@ -93,7 +94,7 @@ postAuthList = ['email', 'password', 'remember']
 postAuthParser = reqparse.RequestParser()
 for i in postAuthList:
     postAuthParser.add_argument(i)
-class API_AUTH(Resource):
+class API_Auth(Resource):
     def post(self):
         args = postAuthParser.parse_args()
         assertArgsNotEmpty(args, postAuthList)
@@ -113,6 +114,34 @@ class API_AUTH(Resource):
         user.password = '******'
         return {'user': toDict(user)}
 
+postBlogsList = ['name', 'summary', 'content']
+postBlogParser = reqparse.RequestParser()
+for i in postBlogsList:
+    postBlogParser.add_argument(i)
+class API_Blogs(Resource):
+    def post(self):
+        if not (current_user.is_authenticated and current_user.admin):
+            abort(403, "No Permission!")
+        args = postBlogParser.parse_args()
+        assertArgsNotEmpty(args, postBlogsList)
+
+        name = args['name'].strip()
+        summary = args['summary'].strip()
+        content = args['content'].strip()
+
+        if not name:
+            abort(400, message="name can not be empty!")
+        if not summary:
+            abort(400, message="summary can not be empty!")
+        if not content:
+            abort(400, message="content can not be empty!")
+
+        blog = Blog(current_user.id, name, summary, content)
+        db.session.add(blog)
+        db.session.commit()
+        return {'blog': toDict(blog)}
+
 api_res.add_resource(API_Users, '/users')
 api_res.add_resource(API_User, '/users/<int:id>')
-api_res.add_resource(API_AUTH, '/authenticate')
+api_res.add_resource(API_Auth, '/authenticate')
+api_res.add_resource(API_Blogs, '/blogs')
