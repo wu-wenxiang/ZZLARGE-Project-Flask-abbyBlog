@@ -13,14 +13,18 @@ from edustack.views.api import _get_blogs_by_page
 
 home = Blueprint('home', __name__)
 
-@home.route('/')
-@home.route('/index/')
-def index():
+def _get_page_index():
     pageIndex = request.args.get('page', '1')
     try:
         pageIndex = int(pageIndex)
     except:
         pageIndex = 1
+    return pageIndex
+
+@home.route('/')
+@home.route('/index/')
+def index():
+    pageIndex = _get_page_index()
     blogs, page = _get_blogs_by_page(pageIndex)
     return render_template(r"home/blogs.html", blogs=blogs, page=page)
 

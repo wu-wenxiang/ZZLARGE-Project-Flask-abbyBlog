@@ -50,15 +50,11 @@ def opt_init():
     test2User = init_user("test2", "test2@test.com")
     db.session.add(test2User)
 
-    for i in range(20):
-        blog1 = Blog(2, "Test1_Blog{0}_Name".format(i),
-                     "Test1_Blog{0}_Summary".format(i),
-                     ("Test1_Blog{0}_Content\n"*20).format(i))
+    for i in range(25):
+        blog1 = Blog(1, "Amdin_Blog{0}_Name".format(i),
+                     "Admin_Blog{0}_Summary".format(i),
+                     ("Admin_Blog{0}_Content\n"*20).format(i))
         db.session.add(blog1)
-        blog2 = Blog(3, "Test2_Blog{0}_Name".format(i),
-                     "Test2_Blog{0}_Summary".format(i),
-                     ("Test2_Blog{0}_Content\n"*20).format(i))
-        db.session.add(blog2)
 
     comment1 = Comment(2, 2, "Comment_User1_Blog2")
     db.session.add(comment1)
