@@ -5,3 +5,4 @@ Created on 2016-01-13
 '''
 
 DEBUG = True
+SQLALCHEMY_ECHO = True

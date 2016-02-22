@@ -16,7 +16,7 @@ home = Blueprint('home', __name__)
 @home.route('/')
 @home.route('/index/')
 def index():
-    pageIndex = request.args.get('pageIndex', '1')
+    pageIndex = request.args.get('page', '1')
     try:
         pageIndex = int(pageIndex)
     except:
