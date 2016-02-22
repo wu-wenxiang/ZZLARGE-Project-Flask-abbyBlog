@@ -64,6 +64,10 @@ def opt_clean():
     if os.path.isdir(ENV_DIR):
         shutil.rmtree(ENV_DIR)
 
+def opt_test():
+    from edustack.models import Blog
+    print type(Blog.query.count())
+
 def opt_prepare():
     _assert_cmd_exist("pip")
     os.system("pip install virtualenv")

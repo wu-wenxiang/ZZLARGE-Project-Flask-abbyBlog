@@ -5,6 +5,7 @@ Created on 2016-02-17
 '''
 
 import flask_login as login
+import markdown2
 import hashlib
 import json
 import re
@@ -17,6 +18,7 @@ from flask_restful import reqparse
 from edustack.models import db
 from edustack.models import User
 from edustack.models import Blog
+from edustack.models import Page
 from edustack.models import Comment
 from flask_login import current_user
 
@@ -114,15 +116,39 @@ class API_Auth(Resource):
         user.password = '******'
         return {'user': toDict(user)}
 
+def _get_blogs_by_page(pageIndex):
+    total = Blog.query.count()
+    page = Page(total, pageIndex)
+    blogs = Blog.query.offset(page.offset).limit(page.limit)
+    return blogs, page
+
+getBlogsList = ['page', 'format']
+getBlogsParser = reqparse.RequestParser()
+[getBlogsParser.add_argument(i) for i in getBlogsList]
 postBlogsList = ['name', 'summary', 'content']
-postBlogParser = reqparse.RequestParser()
-for i in postBlogsList:
-    postBlogParser.add_argument(i)
+postBlogsParser = reqparse.RequestParser()
+[postBlogsParser.add_argument(i) for i in postBlogsList]
 class API_Blogs(Resource):
+    def get(self):
+        args = getBlogsParser.parse_args()
+
+        page = 1
+        try:
+            page = int(args['page'])
+        except:
+            pass
+        format = args['format']
+
+        blogs, page = _get_blogs_by_page(page)
+        if format=='html':
+            for blog in blogs:
+                blog.content = markdown2.markdown(blog.content)
+        return dict(blogs=[toDict(i) for i in blogs], page=page.toDict())
+
     def post(self):
         if not (current_user.is_authenticated and current_user.admin):
             abort(403, "No Permission!")
-        args = postBlogParser.parse_args()
+        args = postBlogsParser.parse_args()
         assertArgsNotEmpty(args, postBlogsList)
 
         name = args['name'].strip()

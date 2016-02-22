@@ -5,18 +5,24 @@ Created on 2016-01-17
 '''
 
 from flask import Blueprint
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, request, url_for
 from flask_login import current_user, logout_user
 from edustack.models import User
 from edustack.models import Blog
+from edustack.views.api import _get_blogs_by_page
 
 home = Blueprint('home', __name__)
 
 @home.route('/')
 @home.route('/index/')
 def index():
-    blogs = Blog.query.all()
-    return render_template(r"home/blogs.html", blogs=blogs)
+    pageIndex = request.args.get('pageIndex', '1')
+    try:
+        pageIndex = int(pageIndex)
+    except:
+        pageIndex = 1
+    blogs, page = _get_blogs_by_page(pageIndex)
+    return render_template(r"home/blogs.html", blogs=blogs, page=page)
 
 @home.route('/register/')
 def register():
