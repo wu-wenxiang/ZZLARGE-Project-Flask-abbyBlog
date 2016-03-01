@@ -122,6 +122,15 @@ def _get_blogs_by_page(pageIndex):
     blogs = Blog.query.offset(page.offset).limit(page.limit)
     return blogs, page
 
+class API_Blog(Resource):
+    def get(self, id):
+        blog = Blog.query.filter_by(id=id).first()
+        try:
+            ret = toDict(blog)
+        except:
+            ret = {"message": "", "data": "Blog", "error": "value:notfound"}
+        return {'blog': ret}
+
 getBlogsList = ['page', 'format']
 getBlogsParser = reqparse.RequestParser()
 [getBlogsParser.add_argument(i) for i in getBlogsList]
@@ -167,6 +176,7 @@ class API_Blogs(Resource):
         db.session.commit()
         return {'blog': toDict(blog)}
 
+api_res.add_resource(API_Blog, '/blogs/<int:id>')
 api_res.add_resource(API_Users, '/users')
 api_res.add_resource(API_User, '/users/<int:id>')
 api_res.add_resource(API_Auth, '/authenticate')
