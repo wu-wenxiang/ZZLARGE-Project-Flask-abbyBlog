@@ -20,7 +20,7 @@ from edustack.models import User
 from edustack.models import Blog
 from edustack.models import Page
 from edustack.models import Comment
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 
 api = Blueprint('api', __name__)
@@ -154,8 +154,9 @@ class API_Blogs(Resource):
                 blog.content = markdown2.markdown(blog.content)
         return dict(blogs=[toDict(i) for i in blogs], page=page.toDict())
 
+    @login_required
     def post(self):
-        if not (current_user.is_authenticated and current_user.admin):
+        if not current_user.admin:
             abort(403, "No Permission!")
         args = postBlogsParser.parse_args()
         assertArgsNotEmpty(args, postBlogsList)
