@@ -116,30 +116,21 @@ class API_Auth(Resource):
         user.password = '******'
         return {'user': toDict(user)}
 
-def _get_blogs_by_page(pageIndex):
-    total = Blog.query.count()
+def _get_items_by_page(pageIndex, Model):
+    total = Model.query.count()
     page = Page(total, pageIndex)
-    blogs = Blog.query.offset(page.offset).limit(page.limit)
+    blogs = Model.query.offset(page.offset).limit(page.limit)
     return blogs, page
 
-class API_Blog(Resource):
-    def get(self, id):
-        blog = Blog.query.filter_by(id=id).first()
-        try:
-            ret = toDict(blog)
-        except:
-            ret = {"message": "", "data": "Blog", "error": "value:notfound"}
-        return {'blog': ret}
-
-getBlogsList = ['page', 'format']
-getBlogsParser = reqparse.RequestParser()
-[getBlogsParser.add_argument(i) for i in getBlogsList]
+getModelsList = ['page', 'format']
+getModelsParser = reqparse.RequestParser()
+[getModelsParser.add_argument(i) for i in getModelsList]
 postBlogsList = ['name', 'summary', 'content']
-postBlogsParser = reqparse.RequestParser()
-[postBlogsParser.add_argument(i) for i in postBlogsList]
+postCommentsParser = reqparse.RequestParser()
+[postCommentsParser.add_argument(i) for i in postBlogsList]
 class API_Blogs(Resource):
     def get(self):
-        args = getBlogsParser.parse_args()
+        args = getModelsParser.parse_args()
 
         page = 1
         try:
@@ -148,7 +139,7 @@ class API_Blogs(Resource):
             pass
         format = args['format']
 
-        blogs, page = _get_blogs_by_page(page)
+        blogs, page = _get_items_by_page(page, Blog)
         if format=='html':
             for blog in blogs:
                 blog.content = markdown2.markdown(blog.content)
@@ -158,7 +149,7 @@ class API_Blogs(Resource):
     def post(self):
         if not current_user.admin:
             abort(403, "No Permission!")
-        args = postBlogsParser.parse_args()
+        args = postCommentsParser.parse_args()
         assertArgsNotEmpty(args, postBlogsList)
 
         name = args['name'].strip()
@@ -177,8 +168,94 @@ class API_Blogs(Resource):
         db.session.commit()
         return {'blog': toDict(blog)}
 
-api_res.add_resource(API_Blog, '/blogs/<int:id>')
+class API_Blog(Resource):
+    def get(self, id):
+        blog = Blog.query.filter_by(id=id).first()
+        try:
+            ret = toDict(blog)
+        except:
+            ret = {"message": "", "data": "Blog", "error": "value:notfound"}
+        return {'blog': ret}
+
+    @login_required
+    def delete(self, id):
+        if not current_user.admin:
+            abort(403, "No Permission!")
+        Blog.query.filter_by(id=id).first().delete()
+        return dict(id=id)
+
+    @login_required
+    def post(self, id):
+        if not current_user.admin:
+            abort(403, "No Permission!")
+        args = postCommentsParser.parse_args()
+        assertArgsNotEmpty(args, postBlogsList)
+
+        name = args['name'].strip()
+        summary = args['summary'].strip()
+        content = args['content'].strip()
+
+        if not name:
+            abort(400, message="name can not be empty!")
+        if not summary:
+            abort(400, message="summary can not be empty!")
+        if not content:
+            abort(400, message="content can not be empty!")
+
+        blog = Blog.query.filter_by(id=id).first()
+        blog.name = name
+        blog.summary = summary
+        blog.content = content
+        db.session.commit()
+        return {'blog': toDict(blog)}
+
+postCommentsList = ['content']
+postCommentsParser = reqparse.RequestParser()
+[postCommentsParser.add_argument(i) for i in postCommentsList]
+class API_Comment(Resource):
+    @login_required
+    def delete(self, id):
+        if not current_user.admin:
+            abort(403, "No Permission!")
+        Comment.query.filter_by(id=id).first().delete()
+        return dict(id=id)
+
+    @login_required
+    def post(self, id):
+        args = postCommentsParser.parse_args()
+        blog = Blog.query.filter_by(id=id).first()
+        if not blog:
+            abort(404, "blog not found!")
+        assertArgsNotEmpty(args, postCommentsList)
+
+        content = args['content'].strip()
+        if not content:
+            abort(400, message="content can not be empty!")
+
+        comment = Comment(user_id=current_user.id,
+                          blog_id=id,
+                          content=content)
+        db.session.add(comment)
+        db.session.commit()
+        return dict(comment=toDict(comment))
+
+class API_Comments(Resource):
+    def get(self):
+        args = getModelsParser.parse_args()
+
+        page = 1
+        try:
+            page = int(args['page'])
+        except:
+            pass
+
+        comments, page = _get_items_by_page(page, Comment)
+        return dict(comments=[toDict(i) for i in comments], page=page.toDict())
+
+api_res.add_resource(API_Auth, '/authenticate')
 api_res.add_resource(API_Users, '/users')
 api_res.add_resource(API_User, '/users/<int:id>')
-api_res.add_resource(API_Auth, '/authenticate')
 api_res.add_resource(API_Blogs, '/blogs')
+api_res.add_resource(API_Blog, '/blogs/<int:id>')
+api_res.add_resource(API_Comments, '/comments')
+api_res.add_resource(API_Comment, '/comments/<int:id>')

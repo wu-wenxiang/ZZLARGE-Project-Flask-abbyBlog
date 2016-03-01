@@ -40,6 +40,14 @@ function getApi(url, data, callback) {
     _ajax('GET', url, data, callback);
 }
 
+function deleteApi(url, data, callback) {
+    if (arguments.length === 2) {
+        callback = data;
+        data = {};
+    }
+    _ajax('DELETE', url, data, callback);
+}
+
 function postApi(url, data, callback) {
     if (arguments.length === 2) {
         callback = data;

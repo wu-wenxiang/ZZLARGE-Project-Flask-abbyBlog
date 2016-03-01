@@ -12,7 +12,7 @@ from flask_login import current_user, logout_user
 from edustack.models import User
 from edustack.models import Blog
 from edustack.models import Comment
-from edustack.views.api import _get_blogs_by_page, toDict
+from edustack.views.api import _get_items_by_page, toDict
 
 
 home = Blueprint('home', __name__)
@@ -29,7 +29,7 @@ def _get_page_index():
 @home.route('/index/')
 def index():
     pageIndex = _get_page_index()
-    blogs, page = _get_blogs_by_page(pageIndex)
+    blogs, page = _get_items_by_page(pageIndex, Blog)
     return render_template(r"home/blogs.html", blogs=blogs, page=page)
 
 @home.route('/register/')
