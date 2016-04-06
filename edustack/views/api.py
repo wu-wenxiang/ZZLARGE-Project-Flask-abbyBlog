@@ -181,7 +181,9 @@ class API_Blog(Resource):
     def delete(self, id):
         if not current_user.admin:
             abort(403, "No Permission!")
-        Blog.query.filter_by(id=id).first().delete()
+        blog = Blog.query.filter_by(id=id).first()
+        db.session.delete(blog)
+        db.session.commit()
         return dict(id=id)
 
     @login_required
