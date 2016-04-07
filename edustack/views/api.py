@@ -152,7 +152,12 @@ class API_Blogs(Resource):
         if format=='html':
             for blog in blogs:
                 blog.content = markdown2.markdown(blog.content)
-        return dict(blogs=[toDict(i) for i in blogs], page=page.toDict())
+
+        tupleBlogs=[(i, toDict(i)) for i in blogs]
+        for i,j in tupleBlogs:
+            j["user"] = toDict(i.user)
+            j["created_at"] = time.mktime(i.created_at.timetuple())
+        return dict(blogs=[j for i,j in tupleBlogs], page=page.toDict())
 
     @login_required
     def post(self):
