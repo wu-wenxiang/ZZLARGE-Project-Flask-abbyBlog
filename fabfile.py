@@ -47,6 +47,7 @@ def copy_project_dir():
         with cd(remote_flask_dir):
             put('config', './')
             put('edustack', './')
+            put('demo/demo.db', 'edustack/db/')
             put('manage.py', './')
             put('requirements.txt', './')
             put('run.py', './')

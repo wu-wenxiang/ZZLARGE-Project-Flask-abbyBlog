@@ -9,6 +9,7 @@ import markdown2
 import hashlib
 import json
 import re
+import time
 
 from flask import Blueprint
 from flask_restful import Api, Resource
@@ -260,7 +261,11 @@ class API_Comments(Resource):
             pass
 
         comments, page = _get_items_by_page(page, Comment)
-        return dict(comments=[toDict(i) for i in comments], page=page.toDict())
+        tupleComments=[(i, toDict(i)) for i in comments]
+        for i,j in tupleComments:
+            j["user"] = toDict(i.user)
+            j["created_at"] = time.mktime(i.created_at.timetuple())
+        return dict(comments=[j for i,j in tupleComments], page=page.toDict())
 
 api_res.add_resource(API_Auth, '/authenticate')
 api_res.add_resource(API_Users, '/users')
