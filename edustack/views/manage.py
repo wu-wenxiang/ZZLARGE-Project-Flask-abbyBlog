@@ -37,13 +37,13 @@ def manage_blogs_edit(blog_id):
                            action='/api/blogs/{0}'.format(blog_id),
                            redirect='/manage/blogs')
 
-@manage.route('/')
 @manage.route('/blogs/')
 def manage_blogs():
     return render_template(r"home/manage_blog_list.html",
                            page_index=_get_page_index(),
                            user=current_user)
 
+@manage.route('/')
 @manage.route('/comments/')
 def manage_comments():
     return render_template(r"home/manage_comment_list.html",

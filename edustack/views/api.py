@@ -54,10 +54,17 @@ _RE_MD5 = re.compile(r'^[0-9a-f]{32}$')
 
 class API_Users(Resource):
     def get(self):
-        users = User.query.all()
+        args = getPageFormatParser.parse_args()
+        page = 1
+        try:
+            page = int(args['page'])
+        except:
+            pass
+        users, page = _get_items_by_page(page, User)
         for user in users:
             user.password = '******'
-        return {'users': [toDict(u) for u in users]}
+        return dict(users=[toDict(i) for i in users], page=page.toDict())
+
     def post(self):
         args = postUserParser.parse_args()
         assertArgsNotEmpty(args, postUserList)
@@ -90,7 +97,7 @@ class API_User(Resource):
     def get(self, id):
         user = User.query.filter_by(id=id).first()
         user.password = '******'
-        return {'user': toDict(user)}
+        return toDict(user)
 
 postAuthList = ['email', 'password', 'remember']
 postAuthParser = reqparse.RequestParser()
@@ -119,19 +126,19 @@ class API_Auth(Resource):
 def _get_items_by_page(pageIndex, Model):
     total = Model.query.count()
     page = Page(total, pageIndex)
-    blogs = Model.query.offset(page.offset).limit(page.limit)
-    return blogs, page
+    models = Model.query.offset(page.offset).limit(page.limit)
+    return models, page
 
 getBlogsList = ['page', 'format']
-getBlogsParser = reqparse.RequestParser()
-[getBlogsParser.add_argument(i) for i in getBlogsList]
+getPageFormatParser = reqparse.RequestParser()
+[getPageFormatParser.add_argument(i) for i in getBlogsList]
 postBlogsList = ['name', 'summary', 'content']
 postBlogsParser = reqparse.RequestParser()
 [postBlogsParser.add_argument(i) for i in postBlogsList]
 
 class API_Blogs(Resource):
     def get(self):
-        args = getBlogsParser.parse_args()
+        args = getPageFormatParser.parse_args()
 
         page = 1
         try:
@@ -244,7 +251,7 @@ class API_Comment(Resource):
 
 class API_Comments(Resource):
     def get(self):
-        args = getBlogsParser.parse_args()
+        args = getPageFormatParser.parse_args()
 
         page = 1
         try:
