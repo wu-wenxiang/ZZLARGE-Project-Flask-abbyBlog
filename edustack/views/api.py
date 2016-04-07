@@ -122,15 +122,16 @@ def _get_items_by_page(pageIndex, Model):
     blogs = Model.query.offset(page.offset).limit(page.limit)
     return blogs, page
 
-getModelsList = ['page', 'format']
-getModelsParser = reqparse.RequestParser()
-[getModelsParser.add_argument(i) for i in getModelsList]
+getBlogsList = ['page', 'format']
+getBlogsParser = reqparse.RequestParser()
+[getBlogsParser.add_argument(i) for i in getBlogsList]
 postBlogsList = ['name', 'summary', 'content']
-postCommentsParser = reqparse.RequestParser()
-[postCommentsParser.add_argument(i) for i in postBlogsList]
+postBlogsParser = reqparse.RequestParser()
+[postBlogsParser.add_argument(i) for i in postBlogsList]
+
 class API_Blogs(Resource):
     def get(self):
-        args = getModelsParser.parse_args()
+        args = getBlogsParser.parse_args()
 
         page = 1
         try:
@@ -149,7 +150,7 @@ class API_Blogs(Resource):
     def post(self):
         if not current_user.admin:
             abort(403, "No Permission!")
-        args = postCommentsParser.parse_args()
+        args = postBlogsParser.parse_args()
         assertArgsNotEmpty(args, postBlogsList)
 
         name = args['name'].strip()
@@ -175,7 +176,7 @@ class API_Blog(Resource):
             ret = toDict(blog)
         except:
             ret = {"message": "", "data": "Blog", "error": "value:notfound"}
-        return {'blog': ret}
+        return ret
 
     @login_required
     def delete(self, id):
@@ -190,7 +191,7 @@ class API_Blog(Resource):
     def post(self, id):
         if not current_user.admin:
             abort(403, "No Permission!")
-        args = postCommentsParser.parse_args()
+        args = postBlogsParser.parse_args()
         assertArgsNotEmpty(args, postBlogsList)
 
         name = args['name'].strip()
@@ -243,7 +244,7 @@ class API_Comment(Resource):
 
 class API_Comments(Resource):
     def get(self):
-        args = getModelsParser.parse_args()
+        args = getBlogsParser.parse_args()
 
         page = 1
         try:
