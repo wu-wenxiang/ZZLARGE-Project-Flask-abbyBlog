@@ -40,7 +40,9 @@ def opt_init():
     def init_user(name, email, admin=False):
         emailHash = hashlib.md5(email).hexdigest()
         password = emailHash
-        image = "http://www.gravatar.com/avatar/{0}?d=mm&s=120".format(emailHash)
+        image = r"http://www.gravatar.com/avatar/{0}?d=mm&s=120".format(emailHash)
+        if admin:
+            image = r"http://tp3.sinaimg.cn/2804214754/180/5668812169/1"
         return User(name, email, password, image, admin)
 
     adminUser = init_user("admin", "admin@admin.com", True)
@@ -85,9 +87,8 @@ def opt_prepare():
     DB_DIR = os.path.join("edustack", "db")
     if not os.path.exists(DB_DIR):
         os.mkdir(DB_DIR)
-    if not os.path.exists(os.path.join(DB_DIR, "demo.db")):
-        shutil.copyfile(os.path.join(DEMO_DIR, "demo.db"),
-                        os.path.join(DB_DIR, "demo.db"))
+    shutil.copyfile(os.path.join(DEMO_DIR, "demo.db"),
+                    os.path.join(DB_DIR, "demo.db"))
     LOGS_DIR = "logs"
     if not os.path.exists(LOGS_DIR):
         os.mkdir(LOGS_DIR)

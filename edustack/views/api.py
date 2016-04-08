@@ -92,7 +92,7 @@ class API_Users(Resource):
         login.login_user(user)
 
         user.password = '******'
-        return {'user': toDict(user)}
+        return toDict(user)
 
 class API_User(Resource):
     def get(self, id):
@@ -122,7 +122,7 @@ class API_Auth(Resource):
         login.login_user(user, remember=remember)
 
         user.password = '******'
-        return {'user': toDict(user)}
+        return toDict(user)
 
 def _get_items_by_page(pageIndex, Model):
     total = Model.query.count()
@@ -180,7 +180,7 @@ class API_Blogs(Resource):
         blog = Blog(current_user.id, name, summary, content)
         db.session.add(blog)
         db.session.commit()
-        return {'blog': toDict(blog)}
+        return toDict(blog)
 
 class API_Blog(Resource):
     def get(self, id):
@@ -223,7 +223,7 @@ class API_Blog(Resource):
         blog.summary = summary
         blog.content = content
         db.session.commit()
-        return {'blog': toDict(blog)}
+        return toDict(blog)
 
 postCommentsList = ['content']
 postCommentsParser = reqparse.RequestParser()
@@ -233,7 +233,9 @@ class API_Comment(Resource):
     def delete(self, id):
         if not current_user.admin:
             abort(403, "No Permission!")
-        Comment.query.filter_by(id=id).first().delete()
+        comment = Comment.query.filter_by(id=id).first()
+        db.session.delete(comment)
+        db.session.commit()
         return dict(id=id)
 
     @login_required
@@ -253,7 +255,7 @@ class API_Comment(Resource):
                           content=content)
         db.session.add(comment)
         db.session.commit()
-        return dict(comment=toDict(comment))
+        return toDict(comment)
 
 class API_Comments(Resource):
     def get(self):
