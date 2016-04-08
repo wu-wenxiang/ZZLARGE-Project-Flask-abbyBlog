@@ -46,9 +46,14 @@ def copy_project_dir():
     with lcd(local_app_dir):
         with cd(remote_flask_dir):
             put('config', './')
-            run(r'[ -f edustack/db/demo.db ] && [ ! -f edustack/db/demo.db.bak ] && mv edustack/db/demo.db edustack/db/demo.db.bak')
+            run(r'[ -f edustack/db/demo.db ] '
+                '&& [ ! -f edustack/db/demo.db.bak ] '
+                '&& mv edustack/db/demo.db edustack/db/demo.db.bak '
+                '|| [ false ]')
             put('edustack', './')
-            run('[ -f edustack/db/demo.db.bak ] && mv edustack/db/demo.db.bak edustack/db/demo.db')
+            run('[ -f edustack/db/demo.db.bak ] '
+                '&& mv edustack/db/demo.db.bak edustack/db/demo.db '
+                '|| [ false ]')
             put('manage.py', './')
             put('requirements.txt', './')
             put('run.py', './')

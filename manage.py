@@ -28,8 +28,11 @@ def showUsage():
     sys.exit()
 
 def opt_syncdb():
+    DB_DIR = os.path.join("edustack", "db")
+    shutil.rmtree(DB_DIR, ignore_errors=True)
+    if not os.path.exists(DB_DIR):
+        os.mkdir(DB_DIR)
     from edustack.models import db
-    db.drop_all()
     db.create_all()
 
 def opt_init():
