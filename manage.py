@@ -52,11 +52,31 @@ def opt_init():
     test2User = init_user("test2", "test2@test.com")
     db.session.add(test2User)
 
-    for i in range(25):
+    blogStr = """
+An h1 header
+============
+
+Paragraphs are separated by a blank line.
+
+2nd paragraph. *Italic*, **bold**, and `monospace`. Itemized lists
+look like:
+
+  * this one
+  * that one
+  * the other one
+
+and images can be specified like so:
+
+![example image](http://www.unexpected-vortices.com/sw/rippledoc/example-image.jpg "An exemplary image")
+    """
+
+    for i in range(6):
         blog1 = Blog(1, "Amdin_Blog{0}_Name".format(i),
                      "Admin_Blog{0}_Summary".format(i),
-                     ("Admin_Blog{0}_Content\n"*20).format(i))
+                     blogStr)
         db.session.add(blog1)
+        comment0 = Comment(1, i, "Example from: http://www.unexpected-vortices.com/sw/rippledoc/quick-markdown-example.html")
+        db.session.add(comment0)
 
     comment1 = Comment(2, 2, "Comment_User1_Blog2")
     db.session.add(comment1)
