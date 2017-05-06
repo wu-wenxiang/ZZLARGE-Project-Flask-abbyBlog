@@ -4,9 +4,9 @@ Created on 2016-02-19
 @author: Wu Wenxiang (wuwenxiang.sh@gmail.com)
 '''
 
-from flask import Blueprint
+from flask import Blueprint, redirect
 from flask import render_template, url_for, abort
-from flask_login import current_user, redirect
+from flask_login import current_user
 from edustack.models import User
 from edustack.models import Blog
 from edustack.models import Comment
