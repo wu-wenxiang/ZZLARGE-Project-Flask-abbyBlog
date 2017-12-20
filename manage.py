@@ -94,7 +94,7 @@ def opt_clean():
 
 def opt_test():
     from edustack.models import Blog
-    print type(Blog.query.count())
+    print(type(Blog.query.count()))
 
 def opt_prepare():
     _assert_cmd_exist("pip")
@@ -119,7 +119,7 @@ def opt_prepare():
 def _assert_cmd_exist(cmd):
     try:
         subprocess.call(cmd)
-    except Exception, e:
+    except Exception as e:
         log.warning("{}->{}".format(type(e), e.message))
         log.error("Command '{}' not exist!".format(cmd))
         sys.exit()
